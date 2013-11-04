@@ -10,6 +10,7 @@ function mfccs = msf_mfcc(speech,fs,varargin)
     addOptional(p,'ncep',        13,   @(x)ge(x,1));          
     addOptional(p,'liftercoeff', 22,   @(x)ge(x,0));          
     addOptional(p,'appendenergy',true, @(x)ismember(x,[true,false]));          
+    addOptional(p,'preemph',     0,    @(x)ge(x,0));    
     parse(p,varargin{:});
     in = p.Results;
     H = msf_filterbank(in.nfilt, fs, in.lowfreq, in.highfreq, in.nfft);

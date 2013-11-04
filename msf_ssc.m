@@ -7,6 +7,7 @@ function feat = msf_ssc(speech,fs,varargin)
     addOptional(p,'lowfreq', 0,    @isnumeric);
     addOptional(p,'highfreq',fs/2, @isnumeric);
     addOptional(p,'nfft',    512,  @isnumeric);            
+    addOptional(p,'preemph',     0,    @(x)ge(x,0));    
     parse(p,varargin{:});
     in = p.Results;
     H = msf_filterbank(in.nfilt,fs,in.lowfreq,in.highfreq,in.nfft);
