@@ -1,0 +1,129 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>msf_mfcc - Mel Frequency Cepstral Coefficients</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-11-05"><meta name="DC.source" content="msf_mfcc.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>msf_mfcc - Mel Frequency Cepstral Coefficients</h1><pre> function feat = msf_mfcc(speech,fs,varargin)</pre><p>given a speech signal, splits it into frames and computes Mel frequency cepstral coefficients for each frame. For a tutorial on MFCCs, see <a href="http://www.practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/">MFCC tutorial</a>.</p><div><ul><li><tt>speech</tt> - the input speech signal, vector of speech samples</li><li><tt>fs</tt> - the sample rate of 'speech', integer</li></ul></div><p>optional arguments supported include the following 'name', value pairs from the 3rd argument on:</p><div><ul><li><tt>'winlen'</tt> - length of window in seconds. Default: 0.025 (25 milliseconds)</li><li><tt>'winstep'</tt> - step between successive windows in seconds. Default: 0.01 (10 milliseconds)</li><li><tt>'nfilt'</tt> - the number filterbanks to use. Default: 26</li><li><tt>'lowfreq'</tt> - the lowest filterbank edge. In Hz. Default: 0</li><li><tt>'highfreq'</tt> - the highest filterbank edge. In Hz. Default: fs/2</li><li><tt>'nfft'</tt> - the FFT size to use. Default: 512</li><li><tt>'ncep'</tt> - the number of cepstral coeffients to use. Default: 13</li><li><tt>'liftercoeff'</tt> - liftering coefficient, 0 is no lifter. Default: 22</li><li><tt>'appendenergy'</tt> - if true, replaces 0th cep coeff with log of total frame energy. Default: true</li></ul></div><p>Example usage:</p><pre> mfccs = msf_mfcc(signal,16000,'nfilt',40,'ncep',12);</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+%% msf_mfcc - Mel Frequency Cepstral Coefficients
+%
+%   function feat = msf_mfcc(speech,fs,varargin)
+%
+% given a speech signal, splits it into frames and computes Mel frequency cepstral coefficients for each frame.
+% For a tutorial on MFCCs, see <http://www.practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/ MFCC tutorial>.
+%
+% * |speech| - the input speech signal, vector of speech samples
+% * |fs| - the sample rate of 'speech', integer
+%
+% optional arguments supported include the following 'name', value pairs 
+% from the 3rd argument on:
+%
+% * |'winlen'| - length of window in seconds. Default: 0.025 (25 milliseconds)
+% * |'winstep'| - step between successive windows in seconds. Default: 0.01 (10 milliseconds)
+% * |'nfilt'| - the number filterbanks to use. Default: 26
+% * |'lowfreq'| - the lowest filterbank edge. In Hz. Default: 0    
+% * |'highfreq'| - the highest filterbank edge. In Hz. Default: fs/2
+% * |'nfft'| - the FFT size to use. Default: 512
+% * |'ncep'| - the number of cepstral coeffients to use. Default: 13
+% * |'liftercoeff'| - liftering coefficient, 0 is no lifter. Default: 22
+% * |'appendenergy'| - if true, replaces 0th cep coeff with log of total frame energy. Default: true
+%
+% Example usage:
+%
+%   mfccs = msf_mfcc(signal,16000,'nfilt',40,'ncep',12);
+%
+function mfccs = msf_mfcc(speech,fs,varargin)
+    p = inputParser;   
+    addOptional(p,'winlen',      0.025,@(x)gt(x,0));
+    addOptional(p,'winstep',     0.01, @(x)gt(x,0));
+    addOptional(p,'nfilt',       26,   @(x)ge(x,1));
+    addOptional(p,'lowfreq',     0,    @(x)ge(x,0));
+    addOptional(p,'highfreq',    fs/2, @(x)ge(x,0));
+    addOptional(p,'nfft',        512,  @(x)gt(x,0));
+    addOptional(p,'ncep',        13,   @(x)ge(x,1));          
+    addOptional(p,'liftercoeff', 22,   @(x)ge(x,0));          
+    addOptional(p,'appendenergy',true, @(x)ismember(x,[true,false]));          
+    addOptional(p,'preemph',     0,    @(x)ge(x,0));    
+    parse(p,varargin{:});
+    in = p.Results;
+    H = msf_filterbank(in.nfilt, fs, in.lowfreq, in.highfreq, in.nfft);
+    pspec = msf_powspec(speech, fs, 'winlen', in.winlen, 'winstep', in.winstep, 'nfft', in.nfft);
+    en = sum(pspec,2); % energy in each frame
+    feat = dct(log(H*pspec'))';
+    mfccs = lifter(feat(:,1:in.ncep), in.liftercoeff);
+    if in.appendenergy
+        mfccs(:,1) = log10(en);
+    end
+    
+end
+
+function lcep = lifter(cep,L)
+    [N,D] = size(cep);
+    n = 0:D-1;
+    lift = 1 + (L/2)*sin(pi*n/L);
+    lcep = cep .* repmat(lift,N,1);
+end
+
+
+##### SOURCE END #####
+--></body></html>

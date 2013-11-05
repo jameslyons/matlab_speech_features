@@ -14,7 +14,7 @@ Feature | Description
  LPCCs | Linear prediction cepstral coefficients
  LSF | line spectral frequencies
  LAR | log area ratios
- RC | reflectin coefficients
+ RC | reflection coefficients
 
 To be implemented:
 

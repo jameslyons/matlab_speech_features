@@ -1,4 +1,30 @@
-% msf_logfb - log filterbank energies
+%% msf_mfcc - Mel Frequency Cepstral Coefficients
+%
+%   function feat = msf_mfcc(speech,fs,varargin)
+%
+% given a speech signal, splits it into frames and computes Mel frequency cepstral coefficients for each frame.
+% For a tutorial on MFCCs, see <http://www.practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/ MFCC tutorial>.
+%
+% * |speech| - the input speech signal, vector of speech samples
+% * |fs| - the sample rate of 'speech', integer
+%
+% optional arguments supported include the following 'name', value pairs 
+% from the 3rd argument on:
+%
+% * |'winlen'| - length of window in seconds. Default: 0.025 (25 milliseconds)
+% * |'winstep'| - step between successive windows in seconds. Default: 0.01 (10 milliseconds)
+% * |'nfilt'| - the number filterbanks to use. Default: 26
+% * |'lowfreq'| - the lowest filterbank edge. In Hz. Default: 0    
+% * |'highfreq'| - the highest filterbank edge. In Hz. Default: fs/2
+% * |'nfft'| - the FFT size to use. Default: 512
+% * |'ncep'| - the number of cepstral coeffients to use. Default: 13
+% * |'liftercoeff'| - liftering coefficient, 0 is no lifter. Default: 22
+% * |'appendenergy'| - if true, replaces 0th cep coeff with log of total frame energy. Default: true
+%
+% Example usage:
+%
+%   mfccs = msf_mfcc(signal,16000,'nfilt',40,'ncep',12);
+%
 function mfccs = msf_mfcc(speech,fs,varargin)
     p = inputParser;   
     addOptional(p,'winlen',      0.025,@(x)gt(x,0));
