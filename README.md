@@ -2,6 +2,7 @@ matlab_speech_features
 ======================
 
 A set of speech feature extraction functions for ASR and speaker identification written in matlab.
+Documentation is available at http://www.practicalcryptography.com/miscellaneous/machine-learning/matlab_speech_features-documentation/
 
 currently implemented:
 
@@ -20,6 +21,5 @@ To be implemented:
 
 - PLP
 
-Currently this code isn't well commented, though hopefully this will change in time. There is also no documentation 
-at the moment, this well be hopefully auto-generated once commenting has been completed.
-
+There are other things I'd like to clean up, e.g. reflection coefficients and log area ratios use MATLABs poly2rc and rc2lar functions,
+I would like to implement these myself. Also the function naming is a bit wierd, I'll have to fix it up at some point.
