@@ -27,6 +27,6 @@ function pspec = msf_powspec(speech,fs,varargin)
     in = p.Results;
    
     frames = msf_framesig(speech,in.winlen*fs,in.winstep*fs,@(x)hamming(x));
-    pspec = 1/in.nfft*abs(fft(frames,in.nfft,2)).^2;
+    pspec = 1/(in.winlen*fs)*abs(fft(frames,in.nfft,2)).^2;
     pspec = pspec(:,1:in.nfft/2);
 end
