@@ -20,6 +20,7 @@
 % * |'ncep'| - the number of cepstral coeffients to use. Default: 13
 % * |'liftercoeff'| - liftering coefficient, 0 is no lifter. Default: 22
 % * |'appendenergy'| - if true, replaces 0th cep coeff with log of total frame energy. Default: true
+% * |'preemph'| - apply preemphasis filter with preemph as coefficient. 0 is no filter. Default: 0.97
 %
 % Example usage:
 %
@@ -36,7 +37,7 @@ function mfccs = msf_mfcc(speech,fs,varargin)
     addOptional(p,'ncep',        13,   @(x)ge(x,1));          
     addOptional(p,'liftercoeff', 22,   @(x)ge(x,0));          
     addOptional(p,'appendenergy',true, @(x)ismember(x,[true,false]));          
-    addOptional(p,'preemph',     0,    @(x)ge(x,0));    
+    addOptional(p,'preemph',     0.97, @(x)ge(x,0));    
     parse(p,varargin{:});
     in = p.Results;
     H = msf_filterbank(in.nfilt, fs, in.lowfreq, in.highfreq, in.nfft);
