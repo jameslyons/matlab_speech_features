@@ -20,7 +20,6 @@
 % * |'ncep'| - the number of cepstral coeffients to use. Default: 13
 % * |'liftercoeff'| - liftering coefficient, 0 is no lifter. Default: 22
 % * |'appendenergy'| - if true, replaces 0th cep coeff with log of total frame energy. Default: true
-% * |'preemph'| - apply preemphasis filter with preemph as coefficient. 0 is no filter. Default: 0.97
 %
 % Example usage:
 %
